@@ -37,17 +37,18 @@ current_path = os.getcwd()
 scores_dir = os.path.join(current_path, "scores")
 os.makedirs(scores_dir, exist_ok=True)
 
-# # 成绩文件路径
-# scores_file = os.path.join(scores_dir, "scores.csv")
-
 # 创建 exams 文件夹（如果不存在）
 exams_dir = os.path.join(current_path, "exams")
 os.makedirs(exams_dir, exist_ok=True)
 
-# 考试文件路径
-exams_file = os.path.join(exams_dir, "exams.csv")
-
+# 从年份创建成绩文件路径
 def get_scores_file(year):
     file_name = year + " 成绩.csv"
     scores_file = os.path.join(scores_dir,file_name)
     return scores_file
+
+# 从学期创建考试文件路径
+def get_exams_file(year):
+    file_name = year + " 考试.csv"
+    exams_file = os.path.join(exams_dir,file_name)
+    return exams_file
