@@ -1,3 +1,5 @@
+import os
+
 from prettytable import PrettyTable
 from requests import session
 from selenium import webdriver
@@ -37,25 +39,30 @@ query_headers = {
     'Referer': 'http://xjwxt.ahpu.edu.cn/ahpu/localLogin.action',
 }
 
+url = 'http://xjwxt.ahpu.edu.cn/ahpu/localLogin.action'
 query_scores_url = 'http://xjwxt.ahpu.edu.cn/ahpu/teach/grade/course/person!search.action?semesterId='
 query_exams_url = 'http://xjwxt.ahpu.edu.cn/ahpu/stdExamTable!examTable.action?semester.id='
 
+def edit_settings():
+    username = input("请输入学号:")
+    password = input("请输入密码:")
+
+    # 暂不考虑实现统一身份认证登录
+    # choice = input("是否使用统一身份认证登录? (y:n):")
+    # if choice in ("y","Y"):
+    #     is_unified_identity_auth = True
+    # else:
+    #     is_unified_identity_auth = False
+
+    config.edit_settings(username, password, True)
+    driver.quit()
+    main()
+
 def init():
-    if config.is_first_start:
-        username = input("请输入学号:")
-        password = input("请输入密码:")
-
-        # 暂不考虑实现统一身份认证登录
-        # choice = input("是否使用统一身份认证登录? (y:n):")
-        # if choice in ("y","Y"):
-        #     is_unified_identity_auth = True
-        # else:
-        #     is_unified_identity_auth = False
-
-        config.edit_settings(username,password,True)
+    if config.get_is_first_start():
+        edit_settings()
 
 def get_cookies(username, password):
-    url = 'http://xjwxt.ahpu.edu.cn/ahpu/localLogin.action'
     driver.get(url)
 
     # 账号输入框
@@ -148,7 +155,8 @@ def show_main_menu():
     print("=" * 30)
     print("1. 查询成绩")
     print("2. 查询考试")
-    print("3. 退出系统")
+    print("3. 修改账号")
+    print("4. 退出系统")
     print("=" * 30)
 
 
@@ -167,13 +175,14 @@ def get_semester_input():
 
 def main():
     init()
-    login(config.username, config.password)
+    login(config.get_useraname(), config.get_password())
 
     while True:
+        os.system("cls")
         show_main_menu()
         try:
-            choice = int(input("请选择操作(1-3): "))
-
+            choice = int(input("请选择操作 (1 - 4): "))
+            os.system("cls")
             if choice == 1:
                 print("\n" + "-" * 20 + "成绩查询" + "-" * 20)
                 sid = get_semester_input()
@@ -183,12 +192,16 @@ def main():
                 sid = get_semester_input()
                 get_exams(sid)
             elif choice == 3:
+                print("\n" + "-" * 20 + "修改账号" + "-" * 20)
+                edit_settings()
+                return
+            elif choice == 4:
                 driver.quit()
                 sys.exit(0)
             else:
-                print("输入无效，请输入 1 - 3 之间的数字")
+                print("输入无效，请输入 1 - 4 之间的数字")
 
-            input("\n按回车键返回主菜单...")
+            input("\n按任意键返回主菜单...")
 
         except ValueError:
             print("输入无效，请输入数字")

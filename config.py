@@ -23,12 +23,20 @@ def edit_settings(username, password, is_unified_identity_auth):
     with open("settings.json", 'w', encoding='utf-8') as settings_json:
         json.dump(settings, settings_json, ensure_ascii=False)
 
-username = settings["username"]
-password = settings["password"]
-# 是否使用统一身份认证登录
-is_unified_identity_auth = settings["is_unified_identity_auth"]
-# 是否首次启动
-is_first_start = settings["is_first_start"]
+def get_useraname():
+    username = settings["username"]
+    return username
+def get_password():
+    password = settings["password"]
+    return password
+def get_is_first_start():
+    is_first_start = settings["is_first_start"]
+    return is_first_start
+def get_is_unified_identity_auth():
+    is_unified_identity_auth = settings.get("is_unified_identity_auth")
+    if is_unified_identity_auth is None or is_unified_identity_auth == "":
+        return False
+    return is_unified_identity_auth
 
 # 获取当前路径
 current_path = os.getcwd()
